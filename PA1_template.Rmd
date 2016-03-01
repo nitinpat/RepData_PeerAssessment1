@@ -65,8 +65,13 @@ maxStepsInterval
 NoOfRowsWithNA <- sum(is.na(activityData))
 NoOfRowsWithNA
 
+<<<<<<< HEAD
 ### For replacing missing values in the dataset,  we use mean for 
 ### that 5-minute interval.
+=======
+### For replacing missing values in the dataset, 
+### we use mean for that 5-minute interval.
+>>>>>>> origin/master
 
 newActivityData <- activityData 
 StepsByInterval_Mean <- tapply(newActivityData$steps, newActivityData$interval, 
@@ -79,12 +84,15 @@ newStepsByDaySum <- tapply(newActivityData$steps, newActivityData$date, sum)
 hist(newStepsByDaySum, xlab="Total steps by day",ylab="Frequency (Days)", 
      main="Histogram : Number of daily steps", breaks=20)
 
+<<<<<<< HEAD
 ### Copy my plot to a PNG file
 dev.copy(png, file = "figures/plot3.png")
 
 ### Don't forget to close the PNG device!
 dev.off()
 
+=======
+>>>>>>> origin/master
 ### finding mean
 newStepsByDayMean <- mean(newStepsByDaySum)
 newStepsByDayMean
@@ -94,7 +102,11 @@ newStepsbyDayMedian <- median(newStepsByDaySum)
 newStepsbyDayMedian
 
 ### It is observed that, the mean value is unchanged while median value is 
+<<<<<<< HEAD
 different from the estimates from the first part of the assignment
+=======
+### different from the estimates from the first part of the assignment
+>>>>>>> origin/master
 
 ### After imputing missing data, the estimates of the total daily number of 
 ### steps i.e. mean and median are observed to be same.
@@ -131,9 +143,12 @@ plot(newStepsByIntervalMeanWeekday,
 plot(newStepsByIntervalMeanWeekEndday, 
      type = "l", main = "Weekendday", 
      xlab="5 minute interval", ylab="Average number of steps")
+<<<<<<< HEAD
      
 ### Copy my plot to a PNG file
 dev.copy(png, file = "figures/plot4.png")
 
 ### Don't forget to close the PNG device!
 dev.off()     
+=======
+>>>>>>> origin/master
