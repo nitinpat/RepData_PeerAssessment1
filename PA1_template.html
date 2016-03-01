@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Loading and preprocessing the data</title>
+
+<script type="text/javascript">
+window.onload = function() {
+  var imgs = document.getElementsByTagName('img'), i, img;
+  for (i = 0; i < imgs.length; i++) {
+    img = imgs[i];
+    // center an image if it is the only element of its parent
+    if (img.parentElement.childElementCount === 1)
+      img.parentElement.style.textAlign = 'center';
+  }
+};
+</script>
+
+
+
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 13px;
+}
+
+body {
+  max-width: 800px;
+  margin: auto;
+  padding: 1em;
+  line-height: 20px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 {
+   font-size:2.2em;
+}
+
+h2 {
+   font-size:1.8em;
+}
+
+h3 {
+   font-size:1.4em;
+}
+
+h4 {
+   font-size:1.0em;
+}
+
+h5 {
+   font-size:0.9em;
+}
+
+h6 {
+   font-size:0.8em;
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre, img {
+  max-width: 100%;
+}
+pre {
+  overflow-x: auto;
+}
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code {
+  font-size: 92%;
+  border: 1px solid #ccc;
+}
+
+code[class] {
+  background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * {
+      background: transparent !important;
+      color: black !important;
+      filter:none !important;
+      -ms-filter: none !important;
+   }
+
+   body {
+      font-size:12pt;
+      max-width:100%;
+   }
+
+   a, a:visited {
+      text-decoration: underline;
+   }
+
+   hr {
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote {
+      padding-right: 1em;
+      page-break-inside: avoid;
+   }
+
+   tr, img {
+      page-break-inside: avoid;
+   }
+
+   img {
+      max-width: 100% !important;
+   }
+
+   @page :left {
+      margin: 15mm 20mm 15mm 10mm;
+   }
+
+   @page :right {
+      margin: 15mm 10mm 15mm 20mm;
+   }
+
+   p, h2, h3 {
+      orphans: 3; widows: 3;
+   }
+
+   h2, h3 {
+      page-break-after: avoid;
+   }
+}
+</style>
+
+
+
+</head>
+
+<body>
+<h2>Loading and preprocessing the data</h2>
+
+<h3>unziping the activity.zip file</h3>
+
+<p>unzip(&ldquo;activity.zip&rdquo;)</p>
+
+<h3>reading activity file</h3>
+
+<p>activityData &lt;- read.csv(&ldquo;activity.csv&rdquo;)</p>
+
+<h2>What is mean total number of steps taken per day?</h2>
+
+<h3>Finding sum no. of steps per day</h3>
+
+<p>StepsByDaySum &lt;- tapply(activityData$steps, activityData$date, sum)</p>
+
+<h3>Creating histogram</h3>
+
+<p>hist(StepsByDaySum, xlab=&ldquo;Total steps by day&rdquo;,ylab=&ldquo;Frequency (Days)&rdquo;,
+     main=&ldquo;Histogram : Number of daily steps&rdquo;, breaks=20)</p>
+
+<h3>Copy my plot to a PNG file</h3>
+
+<p>dev.copy(png, file = &ldquo;figures/plot1.png&rdquo;)</p>
+
+<h3>Don&#39;t forget to close the PNG device!</h3>
+
+<p>dev.off()</p>
+
+<h3>finding mean</h3>
+
+<p>StepsByDayMean &lt;- mean(StepsByDaySum, na.rm = TRUE)
+StepsByDayMean</p>
+
+<h3>finding median</h3>
+
+<p>StepsByDayMedian &lt;- median(StepsByDaySum, na.rm = TRUE)
+StepsByDayMedian</p>
+
+<h2>What is the average daily activity pattern?</h2>
+
+<h3>applying tapply with mean</h3>
+
+<p>StepsByIntervalAvg &lt;- tapply(activityData$steps, activityData$interval, 
+                             mean, na.rm = T)</p>
+
+<h3>plotting graph</h3>
+
+<p>plot(StepsByIntervalAvg, type = &ldquo;l&rdquo;, xlab=&ldquo;5 minute interval&rdquo;, 
+     ylab=&ldquo;Average number of steps&rdquo;, 
+     main=&ldquo;Average number of steps(by each 5 minute interval)&rdquo;)</p>
+
+<h3>Copy my plot to a PNG file</h3>
+
+<p>dev.copy(png, file = &ldquo;figures/plot2.png&rdquo;)</p>
+
+<h3>Don&#39;t forget to close the PNG device!</h3>
+
+<p>dev.off()     </p>
+
+<p>maxStepsInterval &lt;- activityData$interval[which.max(StepsByIntervalAvg)]
+maxStepsInterval</p>
+
+<h2>Imputing missing values</h2>
+
+<p>NoOfRowsWithNA &lt;- sum(is.na(activityData))
+NoOfRowsWithNA</p>
+
+<h3>For replacing missing values in the dataset,  we use mean for</h3>
+
+<h3>that 5-minute interval.</h3>
+
+<p>newActivityData &lt;- activityData 
+StepsByInterval_Mean &lt;- tapply(newActivityData$steps, newActivityData$interval, 
+                               mean, na.rm = T)
+newActivityData$steps[is.na(newActivityData$steps)] &lt;- StepsByInterval_Mean</p>
+
+<p>newStepsByDaySum &lt;- tapply(newActivityData$steps, newActivityData$date, sum)</p>
+
+<h3>plotting histogram</h3>
+
+<p>hist(newStepsByDaySum, xlab=&ldquo;Total steps by day&rdquo;,ylab=&ldquo;Frequency (Days)&rdquo;, 
+     main=&ldquo;Histogram : Number of daily steps&rdquo;, breaks=20)</p>
+
+<h3>Copy my plot to a PNG file</h3>
+
+<p>dev.copy(png, file = &ldquo;figures/plot3.png&rdquo;)</p>
+
+<h3>Don&#39;t forget to close the PNG device!</h3>
+
+<p>dev.off()</p>
+
+<h3>finding mean</h3>
+
+<p>newStepsByDayMean &lt;- mean(newStepsByDaySum)
+newStepsByDayMean</p>
+
+<h3>finding median</h3>
+
+<p>newStepsbyDayMedian &lt;- median(newStepsByDaySum)
+newStepsbyDayMedian</p>
+
+<h3>It is observed that, the mean value is unchanged while median value is</h3>
+
+<p>different from the estimates from the first part of the assignment</p>
+
+<h3>After imputing missing data, the estimates of the total daily number of</h3>
+
+<h3>steps i.e. mean and median are observed to be same.</h3>
+
+<h2>Are there differences in activity patterns between weekdays and weekends?</h2>
+
+<h3>changing datatype of date column</h3>
+
+<p>newActivityData$date &lt;- as.Date(as.character(newActivityData$date, 
+                                             format = &ldquo;%Y%m%d&rdquo;))
+newActivityData$day &lt;- weekdays(newActivityData$date)
+newActivityData$day[newActivityData$day == &ldquo;Saturday&rdquo; | 
+                    newActivityData$day == &ldquo;Sunday&rdquo;] &lt;- &ldquo;weekend&rdquo;
+newActivityData$day[newActivityData$day == &ldquo;Monday&rdquo; | 
+                    newActivityData$day == &ldquo;Tuesday&rdquo; |
+                    newActivityData$day == &ldquo;Wednesday&rdquo; |
+                    newActivityData$day == &ldquo;Thursday&rdquo; |
+                    newActivityData$day == &ldquo;Friday&rdquo;] &lt;- &ldquo;weekday&rdquo;
+newActivityData$day &lt;- as.factor(newActivityData$day)</p>
+
+<h3>plotting graph</h3>
+
+<p>newActivityDataWeekday &lt;- subset(newActivityData, day == &ldquo;weekday&rdquo;)
+newActivityDataWeekEndday &lt;- subset(newActivityData, day == &ldquo;weekend&rdquo;)</p>
+
+<p>newStepsByIntervalMeanWeekday &lt;- tapply(newActivityDataWeekday$steps, 
+                                        newActivityDataWeekday$interval, mean)
+newStepsByIntervalMeanWeekEndday &lt;- tapply(newActivityDataWeekEndday$steps, 
+                                        newActivityDataWeekEndday$interval, 
+                                        mean)
+par(mfrow = c(2, 1))
+plot(newStepsByIntervalMeanWeekday, 
+     type = &ldquo;l&rdquo;, main = &ldquo;Weekday&rdquo;, 
+     xlab=&ldquo;5 minute interval&rdquo;, ylab=&ldquo;Average number of steps&rdquo;)
+plot(newStepsByIntervalMeanWeekEndday, 
+     type = &ldquo;l&rdquo;, main = &ldquo;Weekendday&rdquo;, 
+     xlab=&ldquo;5 minute interval&rdquo;, ylab=&ldquo;Average number of steps&rdquo;)</p>
+
+<h3>Copy my plot to a PNG file</h3>
+
+<p>dev.copy(png, file = &ldquo;figures/plot4.png&rdquo;)</p>
+
+<h3>Don&#39;t forget to close the PNG device!</h3>
+
+<p>dev.off()     </p>
+
+</body>
+
+</html>
