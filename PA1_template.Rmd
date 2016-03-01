@@ -8,18 +8,108 @@ output:
 
 ## Loading and preprocessing the data
 
+# unziping the activity.zip file
+unzip("activity.zip")
+
+# reading activity file
+activityData <- read.csv("activity.csv")
 
 
 ## What is mean total number of steps taken per day?
 
+# Finding sum no. of steps per day
+StepsByDaySum <- tapply(activityData$steps, activityData$date, sum)
+
+# Creating histogram
+hist(StepsByDaySum, xlab="Total steps by day",ylab="Frequency (Days)",
+     main="Histogram : Number of daily steps", breaks=20)
+     
+# finding mean
+StepsByDayMean <- mean(StepsByDaySum, na.rm = TRUE)
+StepsByDayMean
+
+# finding median
+StepsByDayMedian <- median(StepsByDaySum, na.rm = TRUE)
+StepsByDayMedian
 
 
 ## What is the average daily activity pattern?
 
+# applying tapply with mean
+StepsByIntervalAvg <- tapply(activityData$steps, activityData$interval, 
+                             mean, na.rm = T)
+
+# plotting graph
+plot(StepsByIntervalAvg, type = "l", xlab="5 minute interval", 
+     ylab="Average number of steps", 
+     main="Average number of steps(by each 5 minute interval)")
+     
+maxStepsInterval <- activityData$interval[which.max(StepsByIntervalAvg)]
+maxStepsInterval
 
 
 ## Imputing missing values
 
+NoOfRowsWithNA <- sum(is.na(activityData))
+NoOfRowsWithNA
+
+# For replacing missing values in the dataset, 
+# we use mean for that 5-minute interval.
+
+newActivityData <- activityData 
+StepsByInterval_Mean <- tapply(newActivityData$steps, newActivityData$interval, 
+                               mean, na.rm = T)
+newActivityData$steps[is.na(newActivityData$steps)] <- StepsByInterval_Mean
+
+newStepsByDaySum <- tapply(newActivityData$steps, newActivityData$date, sum)
+
+# plotting histogram
+hist(newStepsByDaySum, xlab="Total steps by day",ylab="Frequency (Days)", 
+     main="Histogram : Number of daily steps", breaks=20)
+
+# finding mean
+newStepsByDayMean <- mean(newStepsByDaySum)
+newStepsByDayMean
+
+# finding median
+newStepsbyDayMedian <- median(newStepsByDaySum)
+newStepsbyDayMedian
+
+# It is observed that, the mean value is unchanged while median value is 
+# different from the estimates from the first part of the assignment
+
+# After imputing missing data, the estimates of the total daily number of 
+# steps i.e. mean and median are observed to be same.
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+# changing datatype of date column
+newActivityData$date <- as.Date(as.character(newActivityData$date, 
+                                             format = "%Y%m%d"))
+newActivityData$day <- weekdays(newActivityData$date)
+newActivityData$day[newActivityData$day == "Saturday" | 
+                    newActivityData$day == "Sunday"] <- "weekend"
+newActivityData$day[newActivityData$day == "Monday" | 
+                    newActivityData$day == "Tuesday" |
+                    newActivityData$day == "Wednesday" |
+                    newActivityData$day == "Thursday" |
+                    newActivityData$day == "Friday"] <- "weekday"
+newActivityData$day <- as.factor(newActivityData$day)
+
+# plotting graph
+newActivityDataWeekday <- subset(newActivityData, day == "weekday")
+newActivityDataWeekEndday <- subset(newActivityData, day == "weekend")
+
+newStepsByIntervalMeanWeekday <- tapply(newActivityDataWeekday$steps, 
+                                        newActivityDataWeekday$interval, mean)
+newStepsByIntervalMeanWeekEndday <- tapply(newActivityDataWeekEndday$steps, 
+                                        newActivityDataWeekEndday$interval, 
+                                        mean)
+par(mfrow = c(2, 1))
+plot(newStepsByIntervalMeanWeekday, 
+     type = "l", main = "Weekday", 
+     xlab="5 minute interval", ylab="Average number of steps")
+plot(newStepsByIntervalMeanWeekEndday, 
+     type = "l", main = "Weekendday", 
+     xlab="5 minute interval", ylab="Average number of steps")
