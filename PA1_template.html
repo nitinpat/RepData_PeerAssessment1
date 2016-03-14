@@ -70,7 +70,7 @@ img {
 <p>reading activity file</p>
 <pre class="r"><code>activityData &lt;- read.csv(&quot;activity.csv&quot;)</code></pre>
 <p><strong>What is mean total number of steps taken per day?</strong></p>
-<p>Make a histogram of the total number of steps taken each day</p>
+<p>Make a histogram of the total number of steps taken each day(plot1.png)</p>
 <pre class="r"><code>StepsByDaySum &lt;- tapply(activityData$steps, activityData$date, sum)
 hist(StepsByDaySum, xlab=&quot;Total steps by day&quot;,ylab=&quot;Frequency (Days)&quot;,
      main=&quot;Histogram : Number of daily steps&quot;, breaks=20)</code></pre>
@@ -83,7 +83,7 @@ StepsByDayMean</code></pre>
 StepsByDayMedian</code></pre>
 <pre><code>## [1] 10765</code></pre>
 <p><strong>What is the average daily activity pattern?</strong></p>
-<p>Make a time series plot (i.e. type = “l”) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)</p>
+<p>Make a time series plot (i.e. type = “l”) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)-plot2.png</p>
 <pre class="r"><code>StepsByIntervalAvg &lt;- tapply(activityData$steps, activityData$interval, 
                              mean, na.rm = T)
 plot(StepsByIntervalAvg, type = &quot;l&quot;, xlab=&quot;5 minute interval&quot;, 
@@ -105,7 +105,7 @@ NoOfRowsWithNA</code></pre>
 StepsByInterval_Mean &lt;- tapply(newActivityData$steps, newActivityData$interval, 
                                mean, na.rm = T)
 newActivityData$steps[is.na(newActivityData$steps)] &lt;- StepsByInterval_Mean</code></pre>
-<p>Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?</p>
+<p>Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?(plot3.png)</p>
 <pre class="r"><code>newStepsByDaySum &lt;- tapply(newActivityData$steps, newActivityData$date, sum)
 hist(newStepsByDaySum, xlab=&quot;Total steps by day&quot;,ylab=&quot;Frequency (Days)&quot;, 
      main=&quot;Histogram : Number of daily steps&quot;, breaks=20)</code></pre>
@@ -142,7 +142,7 @@ newStepsByIntervalMeanWeekday &lt;- tapply(newActivityDataWeekday$steps,
 newStepsByIntervalMeanWeekEndday &lt;- tapply(newActivityDataWeekEndday$steps, 
                                         newActivityDataWeekEndday$interval, 
                                         mean)</code></pre>
-<p>plotting graph</p>
+<p>plotting graph(plot4.png)</p>
 <pre class="r"><code>par(mfrow = c(2, 1))
 plot(newStepsByIntervalMeanWeekday, 
      type = &quot;l&quot;, main = &quot;Weekday&quot;, 
