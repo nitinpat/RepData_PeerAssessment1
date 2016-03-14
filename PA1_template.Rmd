@@ -1,120 +1,102 @@
 ---
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
+title: Reproducible Research Project 1
 ---
 
 
-## Loading and preprocessing the data
+**Loading and preprocessing the data**
 
-### unziping the activity.zip file
+unziping the activity.zip file
+```{r}
 unzip("activity.zip")
+```
 
-### reading activity file
+reading activity file
+```{r}
 activityData <- read.csv("activity.csv")
+```
 
+**What is mean total number of steps taken per day?**
 
-## What is mean total number of steps taken per day?
-
-### Finding sum no. of steps per day
+Make a histogram of the total number of steps taken each day
+```{r}
 StepsByDaySum <- tapply(activityData$steps, activityData$date, sum)
-
-### Creating histogram
 hist(StepsByDaySum, xlab="Total steps by day",ylab="Frequency (Days)",
      main="Histogram : Number of daily steps", breaks=20)
+```
 
-### Copy my plot to a PNG file
-dev.copy(png, file = "figures/plot1.png")
-
-### Don't forget to close the PNG device!
-dev.off()
-     
-### finding mean
+Calculate and report the mean and median total number of steps taken per day
+```{r}
 StepsByDayMean <- mean(StepsByDaySum, na.rm = TRUE)
 StepsByDayMean
-
-### finding median
 StepsByDayMedian <- median(StepsByDaySum, na.rm = TRUE)
 StepsByDayMedian
+```
 
+**What is the average daily activity pattern?**
 
-## What is the average daily activity pattern?
-
-### applying tapply with mean
+Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and 
+the average number of steps taken, averaged across all days (y-axis)
+```{r}
 StepsByIntervalAvg <- tapply(activityData$steps, activityData$interval, 
                              mean, na.rm = T)
-
-### plotting graph
 plot(StepsByIntervalAvg, type = "l", xlab="5 minute interval", 
      ylab="Average number of steps", 
      main="Average number of steps(by each 5 minute interval)")
-     
-### Copy my plot to a PNG file
-dev.copy(png, file = "figures/plot2.png")
+```
 
-### Don't forget to close the PNG device!
-dev.off()     
-     
+Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
+```{r}
 maxStepsInterval <- activityData$interval[which.max(StepsByIntervalAvg)]
 maxStepsInterval
+```
 
+**Imputing missing values**
 
-## Imputing missing values
-
+Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
+```{r}
 NoOfRowsWithNA <- sum(is.na(activityData))
 NoOfRowsWithNA
+```
 
-<<<<<<< HEAD
-### For replacing missing values in the dataset,  we use mean for 
-### that 5-minute interval.
-=======
-### For replacing missing values in the dataset, 
-### we use mean for that 5-minute interval.
->>>>>>> origin/master
+Devise a strategy for filling in all of the missing values in the dataset. 
+**For replacing missing values in the dataset, we use mean for that 5-minute interval**
 
+
+Create a new dataset that is equal to the original dataset but with the missing data filled in.
+```{r}
 newActivityData <- activityData 
 StepsByInterval_Mean <- tapply(newActivityData$steps, newActivityData$interval, 
                                mean, na.rm = T)
 newActivityData$steps[is.na(newActivityData$steps)] <- StepsByInterval_Mean
+```
 
+Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
+```{r}
 newStepsByDaySum <- tapply(newActivityData$steps, newActivityData$date, sum)
-
-### plotting histogram
 hist(newStepsByDaySum, xlab="Total steps by day",ylab="Frequency (Days)", 
      main="Histogram : Number of daily steps", breaks=20)
+```
 
-<<<<<<< HEAD
-### Copy my plot to a PNG file
-dev.copy(png, file = "figures/plot3.png")
-
-### Don't forget to close the PNG device!
-dev.off()
-
-=======
->>>>>>> origin/master
-### finding mean
+finding mean
+```{r}
 newStepsByDayMean <- mean(newStepsByDaySum)
 newStepsByDayMean
+```
 
-### finding median
+finding median
+```{r}
 newStepsbyDayMedian <- median(newStepsByDaySum)
 newStepsbyDayMedian
+```
 
-### It is observed that, the mean value is unchanged while median value is 
-<<<<<<< HEAD
-different from the estimates from the first part of the assignment
-=======
-### different from the estimates from the first part of the assignment
->>>>>>> origin/master
+**It is observed that, the mean value is unchanged while median value is different from the estimates from the first part of the assignment**
 
-### After imputing missing data, the estimates of the total daily number of 
-### steps i.e. mean and median are observed to be same.
+**After imputing missing data, the estimates of the total daily number of steps i.e. mean and median are observed to be same.**
 
 
-## Are there differences in activity patterns between weekdays and weekends?
+**Are there differences in activity patterns between weekdays and weekends?**
 
-### changing datatype of date column
+```{r}
 newActivityData$date <- as.Date(as.character(newActivityData$date, 
                                              format = "%Y%m%d"))
 newActivityData$day <- weekdays(newActivityData$date)
@@ -127,7 +109,7 @@ newActivityData$day[newActivityData$day == "Monday" |
                     newActivityData$day == "Friday"] <- "weekday"
 newActivityData$day <- as.factor(newActivityData$day)
 
-### plotting graph
+
 newActivityDataWeekday <- subset(newActivityData, day == "weekday")
 newActivityDataWeekEndday <- subset(newActivityData, day == "weekend")
 
@@ -136,6 +118,10 @@ newStepsByIntervalMeanWeekday <- tapply(newActivityDataWeekday$steps,
 newStepsByIntervalMeanWeekEndday <- tapply(newActivityDataWeekEndday$steps, 
                                         newActivityDataWeekEndday$interval, 
                                         mean)
+```
+
+plotting graph
+```{r}
 par(mfrow = c(2, 1))
 plot(newStepsByIntervalMeanWeekday, 
      type = "l", main = "Weekday", 
@@ -143,12 +129,4 @@ plot(newStepsByIntervalMeanWeekday,
 plot(newStepsByIntervalMeanWeekEndday, 
      type = "l", main = "Weekendday", 
      xlab="5 minute interval", ylab="Average number of steps")
-<<<<<<< HEAD
-     
-### Copy my plot to a PNG file
-dev.copy(png, file = "figures/plot4.png")
-
-### Don't forget to close the PNG device!
-dev.off()     
-=======
->>>>>>> origin/master
+```
